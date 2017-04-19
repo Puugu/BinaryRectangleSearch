@@ -13,15 +13,18 @@ Last Edit: n/a
 
 #include <iostream>
 #include <fstream>
+#include <string>
 #include <ctime>
 
 using namespace std;
 
 //function predicates
-int getUserMenuSelection();
+int getMainMenuSelection();
 int getRectangleWidth();
 int getRectangleHeight();
-void generateRectangleFile(int width, int height);
+string generateRectangleFile(int width, int height);
+bool findRectangles(string fileName);
+bool verifyFileExists(string fileName);
 
 int main() {
 
@@ -29,11 +32,13 @@ int main() {
 	int menuSelection = 0;
 	int rectangleWidth = 0;
 	int rectangleHeight = 0;
+	string fileName = "fileNeverCreated";
+	bool rectanglesSearched = false;
 
 	//display program welcome
 	cout << "Welcome to Binary Rectangle Finder\n\n";
 	do {
-		menuSelection = getUserMenuSelection();
+		menuSelection = getMainMenuSelection();
 
 		//process menu selection
 		switch (menuSelection) {
@@ -44,10 +49,15 @@ int main() {
 			// call function to get heigth of rectange
 			rectangleHeight = getRectangleHeight();
 			// call function to generate rectangle output file
-			generateRectangleFile(rectangleWidth, rectangleHeight);
+			fileName = generateRectangleFile(rectangleWidth, rectangleHeight);
 			break;
 		case 2:
-			cout << "Searching for rectangles. This code is not yet implemented.\n";
+			//call function to find rectangles
+			rectanglesSearched = findRectangles(fileName);
+			//check to see if file was available to be searched
+			if (rectanglesSearched == false) {
+				cout << "ERROR: File <" << fileName <<"> could not be found.\n";
+			}
 			break;
 		case 3:
 			cout << "Thank you for using Binary Rectangle Finder. Program will now close.\n";
@@ -62,7 +72,7 @@ int main() {
 	return 0;
 }
 
-int getUserMenuSelection() {
+int getMainMenuSelection() {
 	//This function displays the menu to the user and gets the user's menu selection
 	// Created by Puugu on 19 April 2017
 
@@ -150,13 +160,14 @@ int getRectangleHeight() {
 	return rectHeigth;
 }
 
-void generateRectangleFile(int width, int height) {
+string generateRectangleFile(int width, int height) {
 	//This function creates the binary rectangle and outputs as a file
 	//Created by Puugu on 19 April 2017
 
 	//declare and intialize variables, etc.
 	int binVal = 0;
-	ofstream binaryRectangleFile("binRect.txt");
+	string fileName = "binRect.txt";
+	ofstream binaryRectangleFile(fileName);
 
 	//first line of output file will have the width and height
 	binaryRectangleFile << width <<" "<< height << endl;
@@ -172,5 +183,37 @@ void generateRectangleFile(int width, int height) {
 
 	//close file and exit function
 	binaryRectangleFile.close();
-	return;
+	return fileName;
+}
+
+bool findRectangles(string fileName) {
+	//This function searches the binary matrix for rectangles with corners that are 0s
+	//Created by Puugu on 19 April 2017
+
+	//check to see if matrix has been created
+	if (verifyFileExists(fileName) == false) {
+		//either file name is inaccurate or matrix has not been created
+		//will be unable to search matrix for rectangles
+		return false;
+	}
+
+	return true;
+}
+
+bool verifyFileExists(string fileName) {
+	//This function verifies the binRect.txt file exists
+	//Created by Puugu on 19 April 2017
+
+	//declare and intialize variables, etc.
+
+	//check to see if file exists
+	ifstream binaryRectangleFile(fileName);
+	if (!binaryRectangleFile) {
+		//file doesn't exits
+		return false;
+	}
+	else {
+		//file exists
+		return true;
+	}
 }
