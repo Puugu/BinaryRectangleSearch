@@ -28,6 +28,7 @@ int main() {
 	//declare and initalize variables, etc.
 	int menuSelection = 0;
 	int rectangleWidth = 0;
+	int rectangleHeight = 0;
 
 	//display program welcome
 	cout << "Welcome to Binary Rectangle Finder\n\n";
@@ -42,6 +43,8 @@ int main() {
 			rectangleWidth = getRectangleWidth();
 			cout << "The rectangle width is: " << rectangleWidth << endl;
 			// call function to get heigth of rectange
+			rectangleHeight = getRectangleHeight();
+			cout << "The rectangle height is: " << rectangleHeight << endl;
 			// call function to generate rectangle output file
 			break;
 		case 2:
@@ -120,8 +123,32 @@ int getRectangleWidth() {
 }
 
 int getRectangleHeight() {
-	//dummy defition
-	return 0;
+	//This function gets the height for the binary rectange from the user
+	//Created by Puugu on 19 April 2017
+
+	//declare and intialize variables, etc.
+	int rectHeigth = 0;
+
+	//Prompt user for rectangle height
+	//Assignment specified height must be between 10 and 50, inclusive
+	cout << "The height of the rectangle must be between 10 and 50, inclusive.\n";
+	cout << "Please enter the desired height of the binary rectangle: ";
+	cin >> rectHeigth;
+	cout << endl;
+	//validate input
+	while ((!cin) || (rectHeigth<10) || (rectHeigth>50)) {
+		//clear error
+		cin.clear();
+		//flush input buffer
+		cin.ignore(numeric_limits<streamsize>::max(), '\n');
+		//Tell user they have entered invalid data and prompt for re-entry
+		cout << "ERROR: Your input was not valid. Please enter a height between 10 and 50, inclusive: ";
+		cin >> rectHeigth;
+		cout << endl;
+	}
+
+	//return rectangle height
+	return rectHeigth;
 }
 
 void generateRectangleFile(int width, int height) {
