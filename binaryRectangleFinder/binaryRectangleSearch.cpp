@@ -19,17 +19,42 @@ using namespace std;
 
 //function predicates
 int getUserMenuSelection();
+int getRectangleWidth();
+int getRectangleHeight();
+void generateRectangleFile(int width, int height);
 
 int main() {
 
 	//declare and initalize variables, etc.
 	int menuSelection = 0;
+	int rectangleWidth = 0;
 
 	//display program welcome
 	cout << "Welcome to Binary Rectangle Finder\n\n";
-	menuSelection = getUserMenuSelection();
+	do {
+		menuSelection = getUserMenuSelection();
 
-	cout << "Menu Selection was: " << menuSelection<< endl;
+		//process menu selection
+		switch (menuSelection) {
+		case 1:
+			cout << "Create Matrix has been selected.\n";
+			// call function to get width of rectangle
+			rectangleWidth = getRectangleWidth();
+			cout << "The rectangle width is: " << rectangleWidth << endl;
+			// call function to get heigth of rectange
+			// call function to generate rectangle output file
+			break;
+		case 2:
+			cout << "Searching for rectangles. This code is not yet implemented.\n";
+			break;
+		case 3:
+			cout << "Thank you for using Binary Rectangle Finder. Program will now close.\n";
+			break;
+		default:
+			cout << "Menu Selection Error Occurred. Program will now terminate.\n";
+			menuSelection = 3;
+		}
+	} while (menuSelection != 3);
 
 	system("pause");
 	return 0;
@@ -61,5 +86,44 @@ int getUserMenuSelection() {
 		cout << endl;
 	}
 
+	//return menu selection
 	return menuSelection;
+}
+
+int getRectangleWidth() {
+	//This function gets the width for the binary rectange from the user
+	//Created by Puugu on 19 April 2017
+
+	//declare and intialize variables, etc.
+	int rectWidth = 0;
+
+	//Prompt user for rectangle width
+	//Assignment specified width must be between 10 and 80, inclusive
+	cout << "The width of the rectangle must be between 10 and 80, inclusive.\n";
+	cout << "Please enter the desired width of the binary rectangle: ";
+	cin >> rectWidth;
+	cout << endl;
+	//validate input
+	while ((!cin) || (rectWidth<10) || (rectWidth>80)) {
+		//clear error
+		cin.clear();
+		//flush input buffer
+		cin.ignore(numeric_limits<streamsize>::max(), '\n');
+		//Tell user they have entered invalid data and prompt for re-entry
+		cout << "ERROR: Your input was not valid. Please enter a width between 10 and 80, inclusive: ";
+		cin >> rectWidth;
+		cout << endl;
+	}
+
+	//return rectangle width
+	return rectWidth;
+}
+
+int getRectangleHeight() {
+	//dummy defition
+	return 0;
+}
+
+void generateRectangleFile(int width, int height) {
+	//dummy defintion
 }
