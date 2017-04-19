@@ -41,11 +41,10 @@ int main() {
 			cout << "Create Matrix has been selected.\n";
 			// call function to get width of rectangle
 			rectangleWidth = getRectangleWidth();
-			cout << "The rectangle width is: " << rectangleWidth << endl;
 			// call function to get heigth of rectange
 			rectangleHeight = getRectangleHeight();
-			cout << "The rectangle height is: " << rectangleHeight << endl;
 			// call function to generate rectangle output file
+			generateRectangleFile(rectangleWidth, rectangleHeight);
 			break;
 		case 2:
 			cout << "Searching for rectangles. This code is not yet implemented.\n";
@@ -152,5 +151,26 @@ int getRectangleHeight() {
 }
 
 void generateRectangleFile(int width, int height) {
-	//dummy defintion
+	//This function creates the binary rectangle and outputs as a file
+	//Created by Puugu on 19 April 2017
+
+	//declare and intialize variables, etc.
+	int binVal = 0;
+	ofstream binaryRectangleFile("binRect.txt");
+
+	//first line of output file will have the width and height
+	binaryRectangleFile << width <<" "<< height << endl;
+
+	//generate values for output file
+	for (int i = 0; i < width; i++) {
+		for (int j = 0; j < height; j++) {
+			binVal = rand() % 2;
+			binaryRectangleFile << binVal << " ";
+		}
+		binaryRectangleFile << endl;
+	}
+
+	//close file and exit function
+	binaryRectangleFile.close();
+	return;
 }
