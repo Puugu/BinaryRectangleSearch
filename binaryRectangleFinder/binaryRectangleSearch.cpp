@@ -4,6 +4,14 @@ matrix with those dimensions, and allows the user to search the matrix for recta
 are 0 (the contents of the rectangle are irrelevant). The corners are then output into a file.
 --------------------------------------------------------------------------------------------------
 Explination of Logic:
+First, search row by column to find upper left zero. When found, pass to function to find bottom left
+zero - simply have to move down the column, giving fewer values to check. Next check for top right 
+zero - only have to move to end of row. Finally, use bottom left and upper right zeros to find
+location of  lower right corner, and check to ensure is zero - this prevents having to search 
+through the 2d matrix.
+While this approach is not the most efficient process, it meets all the requirements in the document
+provided at the start of the assignment. I'm following the philosophy of "if it works, ship it
+and move on to the next thing."
 --------------------------------------------------------------------------------------------------
 Created by: Puugu
 Created on: 19 April 2017
