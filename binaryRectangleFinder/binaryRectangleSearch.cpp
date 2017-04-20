@@ -297,7 +297,7 @@ void findUpperRight(int *binMatrix, int upperLeft[2], int lowerLeft[2], int rect
 	bool foundCorner = false;
 
 	//search for upper right coordinate
-	for (int i = upperLeft[1]; i < (rectWidth - upperLeft[1]) + 1; i++) {
+	for (int i = upperLeft[1]; i < (rectWidth - upperLeft[1]); i++) {
 		if (binMatrix[upperLeft[0] + i + 1] == 0) {
 			//find row
 			upperRight[0] = upperLeft[0];
