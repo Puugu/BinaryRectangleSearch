@@ -25,6 +25,10 @@ int getRectangleHeight();
 string generateRectangleFile(int width, int height);
 bool findRectangles(string fileName);
 bool verifyFileExists(string fileName);
+void findLowerLeft(int *binMatrix, int upperLeft[2], int rectWidth, int rectHeight, ofstream& cornersFile);
+void findUpperRight(int *binMatrix, int upperLeft[2], int lowerLeft[2], int rectWidth, int rectHeight, ofstream& cornersFile);
+bool findLowerRight(int *binMatrix, int lowerLeft[2], int upperRight[2], int rectWidth, int rectHeight);
+void addCorners(int upperLeft[2], int lowerLeft[2], int upperRight[2], ofstream& cornersFile);
 
 int main() {
 
@@ -173,13 +177,19 @@ string generateRectangleFile(int width, int height) {
 	binaryRectangleFile << width <<" "<< height << endl;
 
 	//generate values for output file
-	for (int i = 0; i < width; i++) {
-		for (int j = 0; j < height; j++) {
+	for (int i = 0; i < height-1; i++) {
+		for (int j = 0; j < width-1; j++) {
 			binVal = rand() % 2;
 			binaryRectangleFile << binVal << " ";
 		}
+		binaryRectangleFile << rand() % 2;
 		binaryRectangleFile << endl;
 	}
+	for (int j = 0; j < width - 1; j++) {
+		binVal = rand() % 2;
+		binaryRectangleFile << binVal << " ";
+	}
+	binaryRectangleFile << rand() % 2;
 
 	//close file and exit function
 	binaryRectangleFile.close();
@@ -197,6 +207,45 @@ bool findRectangles(string fileName) {
 		return false;
 	}
 
+	//declare and intialize variables
+	ifstream binRectFile(fileName);
+	int rectWidth = 0;
+	int rectHeight = 0;
+	ofstream cornersFile("corners.txt");
+	int upperLeft[2];
+
+	//get width and height
+	binRectFile >> rectWidth;
+	binRectFile >> rectHeight;
+
+	//create array for values
+	int *binMatrix = new int[rectWidth*rectHeight];
+
+	//get values
+	for (int i = 0; i < (rectWidth*rectHeight); i++) {
+		binRectFile >> binMatrix[i];
+	}
+
+	//close input file
+	binRectFile.close();
+
+	//search for top left corner of rectangle
+	for (int i = 1; i <= (rectWidth*rectHeight); i++) {
+	//for (int i = 1; i <= (rectWidth); i++) {
+		if (binMatrix[i - 1] == 0) {
+			//find column
+			upperLeft[1] = (i - 1) % 10;
+			//find row
+			upperLeft[0] = (i - upperLeft[1] - 1)/10;
+			//cout << "Row: " << upperLeft[0] << " Column: " << upperRight[0] << endl;
+			//call function to find lower left corner
+			findLowerLeft(binMatrix, upperLeft, rectWidth, rectHeight, cornersFile);
+		}
+	}
+
+	//close output file
+	cornersFile.close();
+
 	return true;
 }
 
@@ -204,16 +253,92 @@ bool verifyFileExists(string fileName) {
 	//This function verifies the binRect.txt file exists
 	//Created by Puugu on 19 April 2017
 
-	//declare and intialize variables, etc.
-
 	//check to see if file exists
 	ifstream binaryRectangleFile(fileName);
 	if (!binaryRectangleFile) {
 		//file doesn't exits
+		binaryRectangleFile.close();
 		return false;
 	}
 	else {
 		//file exists
+		binaryRectangleFile.close();
 		return true;
 	}
+}
+
+void findLowerLeft(int *binMatrix, int upperLeft[2], int rectWidth, int rectHeight, ofstream& cornersFile) {
+	//This function uses the upper left coordinate to check for a lower left coordinate
+	//Created by Puugu on 19 April 2017
+
+	//declare and initialize variables
+	int lowerLeft[2];
+
+	//search for lower left coordinate
+	for (int i = upperLeft[0]+1; i < rectHeight; i++) {
+		if (binMatrix[i*rectWidth + upperLeft[1]] == 0) {
+			//find column
+			lowerLeft[1] = upperLeft[1];
+			//find row
+			lowerLeft[0] = i;
+			//call function to find upper right corner
+			findUpperRight(binMatrix, upperLeft, lowerLeft, rectWidth, rectHeight, cornersFile);
+		}
+	}
+	return;
+}
+
+void findUpperRight(int *binMatrix, int upperLeft[2], int lowerLeft[2], int rectWidth, int rectHeight, ofstream& cornersFile) {
+	//This function uses the upper left coordinate to find the upper right coordinate
+	//Created by Puugu on 19 April 2017
+
+	//declare and initialize variables
+	int upperRight[2];
+	bool foundCorner = false;
+
+	//search for upper right coordinate
+	for (int i = upperLeft[1]; i < (rectWidth - upperLeft[1]) + 1; i++) {
+		if (binMatrix[upperLeft[0] + i + 1] == 0) {
+			//find row
+			upperRight[0] = upperLeft[0];
+			//find column
+			upperRight[1] = i+1;
+			//call function to find the lower right coordinate
+			foundCorner = findLowerRight(binMatrix, lowerLeft, upperRight, rectWidth, rectHeight);
+
+			if (foundCorner == true) {
+				//four corners have been found, add to output file
+				addCorners(upperLeft, lowerLeft, upperRight, cornersFile);
+			}
+		}
+	}
+
+	return;
+}
+
+bool findLowerRight(int *binMatrix, int lowerLeft[2], int upperRight[2], int rectWidth, int rectHeight) {
+	//This function uses the lower left and upper right coordinates to find the lower right coordinate
+	//Created by Puugu on 19 April 2017
+
+	//check lower right corner
+	if ((binMatrix[lowerLeft[0] * rectWidth+upperRight[1]]) == 0) {
+		return true;
+	}
+	else {
+		return false;
+	}
+}
+
+void addCorners(int upperLeft[2], int lowerLeft[2], int upperRight[2], ofstream& cornersFile) {
+	//This function adds the corners of the rectangle to the output file
+	//Created by Puugu on 19 April 2017
+
+	//add rectangle to output file
+	cornersFile << "(" << upperLeft[0] << "," << upperLeft[1] << "), ";
+	cornersFile << "(" << lowerLeft[0] << "," << lowerLeft[1] << "), ";
+	cornersFile << "(" << upperRight[0] << "," << upperRight[1] << "), ";
+	cornersFile << "(" << lowerLeft[0] << "," << upperRight[1] << ")\n";
+
+	//exit function
+	return;
 }
