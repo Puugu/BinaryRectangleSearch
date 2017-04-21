@@ -5,9 +5,9 @@ are 0 (the contents of the rectangle are irrelevant). The corners are then outpu
 --------------------------------------------------------------------------------------------------
 Explination of Logic:
 First, search row by column to find upper left zero. When found, pass to function to find bottom left
-zero - simply have to move down the column, giving fewer values to check. Next check for top right 
+zero - simply have to move down the column, giving fewer values to check. Next check for top right
 zero - only have to move to end of row. Finally, use bottom left and upper right zeros to find
-location of  lower right corner, and check to ensure is zero - this prevents having to search 
+location of  lower right corner, and check to ensure is zero - this prevents having to search
 through the 2d matrix.
 While this approach is not the most efficient process, it meets all the requirements in the document
 provided at the start of the assignment. I'm following the philosophy of "if it works, ship it
@@ -16,7 +16,8 @@ and move on to the next thing."
 Created by: Puugu
 Created on: 19 April 2017
 --------------------------------------------------------------------------------------------------
-Last Edit: n/a
+Last Edit: 20 April 2017 by Puugu
+Changed file name to matrix.txt, as per instructor specification
 ****************************************************************************************************/
 
 #include <iostream>
@@ -30,7 +31,7 @@ using namespace std;
 int getMainMenuSelection();
 int getRectangleWidth();
 int getRectangleHeight();
-string generateRectangleFile(int width, int height);
+string generateRectangleFile(int width, int height, string fileName);
 bool findRectangles(string fileName);
 bool verifyFileExists(string fileName);
 void findLowerLeft(int *binMatrix, int upperLeft[2], int rectWidth, int rectHeight, ofstream& cornersFile);
@@ -44,7 +45,7 @@ int main() {
 	int menuSelection = 0;
 	int rectangleWidth = 0;
 	int rectangleHeight = 0;
-	string fileName = "fileNeverCreated";
+	string fileName = "matrix.txt";
 	bool rectanglesSearched = false;
 
 	//display program welcome
@@ -61,7 +62,7 @@ int main() {
 			// call function to get heigth of rectange
 			rectangleHeight = getRectangleHeight();
 			// call function to generate rectangle output file
-			fileName = generateRectangleFile(rectangleWidth, rectangleHeight);
+			fileName = generateRectangleFile(rectangleWidth, rectangleHeight, fileName);
 			break;
 		case 2:
 			//call function to find rectangles
@@ -172,13 +173,12 @@ int getRectangleHeight() {
 	return rectHeigth;
 }
 
-string generateRectangleFile(int width, int height) {
+string generateRectangleFile(int width, int height, string fileName) {
 	//This function creates the binary rectangle and outputs as a file
 	//Created by Puugu on 19 April 2017
 
 	//declare and intialize variables, etc.
 	int binVal = 0;
-	string fileName = "binRect.txt";
 	ofstream binaryRectangleFile(fileName);
 
 	//first line of output file will have the width and height
