@@ -16,8 +16,12 @@ and move on to the next thing."
 Created by: Puugu
 Created on: 19 April 2017
 --------------------------------------------------------------------------------------------------
-Last Edit: 20 April 2017 by Puugu
-Changed file name to matrix.txt, as per instructor specification
+Edit: 20 April 2017 by Puugu
+Changed file name to matrix.txt, as per instructor request
+--------------------------------------------------------------------------------------------------
+Last Edit: 25 April 2017 by Puugu
+Changed generateRectangleFile so that file would just store matrix.
+findRectangles now reads matrix from file and determines width and height.
 ****************************************************************************************************/
 
 #include <iostream>
@@ -181,9 +185,6 @@ string generateRectangleFile(int width, int height, string fileName) {
 	int binVal = 0;
 	ofstream binaryRectangleFile(fileName);
 
-	//first line of output file will have the width and height
-	binaryRectangleFile << width <<" "<< height << endl;
-
 	//generate values for output file
 	for (int i = 0; i < height-1; i++) {
 		for (int j = 0; j < width-1; j++) {
@@ -217,15 +218,25 @@ bool findRectangles(string fileName) {
 
 	//declare and intialize variables
 	ifstream binRectFile(fileName);
+	string tempLine;
+	int lineCounter = 0;
 	int rectWidth = 0;
 	int rectHeight = 0;
 	ofstream cornersFile("corners.txt");
 	int upperLeft[2];
 
 	//get width and height
-	binRectFile >> rectWidth;
-	binRectFile >> rectHeight;
+	while (!binRectFile.eof()) {
+		getline(binRectFile, tempLine);
+		lineCounter++;
+	}
+	rectWidth = (tempLine.length() + 2) / 2;
+	rectHeight = lineCounter;
 
+	//go back to start of input file to get values
+	binRectFile.clear();
+	binRectFile.seekg(0, ios::beg);
+	
 	//create array for values
 	int *binMatrix = new int[rectWidth*rectHeight];
 
